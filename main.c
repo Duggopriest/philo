@@ -61,19 +61,23 @@ void	*phylo_run(void *vargp)
 {
 	int		i;
 	t_all	*all;
+	// long	last_ate;
+	int		wake_up;
 
 	all = vargp;
 	i = assignnum();
-	while (1)
+	all->philos[i].time_to_die += get_time();
+	while (all->philos[i].time_to_die >= get_time())
 	{
-		if (all->philos[i].time_to_die <= 0)
-			break;
-		printf("%i %i is thinking", get_time(), i);
+		printf("	%i %i is thinking\n", get_time(), i);
 		// while (1)
 		// 	if (eat())
 		// 		break ;
-		printf("%i %i is sleeping", get_time(), i);
-		usleep(all->philos[i].time_to_sleep);
+		all->philos[i].time_to_die += get_time(); // reset time to die
+		printf("	%i %i is sleeping\n", get_time(), i);
+		wake_up = all->philos[i].time_to_sleep + get_time();
+		while (wake_up >= get_time())
+			i = i;
 	}
 	return (NULL);
 }
