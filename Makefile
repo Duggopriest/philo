@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 13:29:03 by jgobbett          #+#    #+#              #
-#    Updated: 2022/05/16 15:42:07 by jgobbett         ###   ########.fr        #
+#    Updated: 2022/05/16 23:12:23 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NAME = philo
 all:
 	@clear
 	@echo -n Compiling philo...
-	@gcc $(SRC) $(INCS) $(FLAGS) -o $(NAME)
+	@gcc $(SRC) $(FLAGS) -o $(NAME)
 	@echo Done
 	@echo running
 	@./philo 1 1 1 1

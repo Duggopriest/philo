@@ -31,12 +31,50 @@ void	printf_time(void)
 	}
 }
 
+int	get_time(void)
+{
+	struct timeval			end;
+	static struct timeval	*start = NULL;
+
+	if (start == NULL)
+	{
+		start = malloc(sizeof(end));
+		gettimeofday(start, NULL);
+	}
+	else
+	{
+		gettimeofday(&end, NULL);
+		return ((end.tv_sec * 1000000 + end.tv_usec)
+			- (start->tv_sec * 1000000 + start->tv_usec));
+	}
+	return (0);
+}
+
+int	assignnum(void)
+{
+	static int	i = -1;
+
+	return (++i);
+}
+
 void	*phylo_run(void *vargp)
 {
-	if (!vargp)
-		sleep(1);
-	sleep(3);
-	printf_time();
+	int		i;
+	t_all	*all;
+
+	all = vargp;
+	i = assignnum();
+	while (1)
+	{
+		if (all->philos[i].time_to_die <= 0)
+			break;
+		printf("%i %i is thinking", get_time(), i);
+		// while (1)
+		// 	if (eat())
+		// 		break ;
+		printf("%i %i is sleeping", get_time(), i);
+		usleep(all->philos[i].time_to_sleep);
+	}
 	return (NULL);
 }
 
@@ -49,7 +87,7 @@ void	spawn_philos(char **argv, t_all *all)
 	while (++i < all->forks)
 	{
 		all->philos[i].time_to_die = ft_atoi(argv[1]);
-		pthread_create(&all->thread_id[0], NULL, phylo_run, NULL);
+		pthread_create(&all->thread_id[0], NULL, phylo_run, all);
 	}
 	i = -1;
 	while (++i < all->forks)
@@ -73,6 +111,7 @@ int	main(int argc, char	**argv)
 	t_all	all;
 
 	printf_time();
+	get_time();
 	all.forks = argc - 1;
 	all.forks = 10;
 	all.philo_num = all.forks;
