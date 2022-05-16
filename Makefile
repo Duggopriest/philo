@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
+#    By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 13:29:03 by jgobbett          #+#    #+#              #
-#    Updated: 2022/05/15 20:35:36 by marvin           ###   ########.fr        #
+#    Updated: 2022/05/16 15:42:07 by jgobbett         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,11 @@ NAME = philo
 
 all:
 	@clear
-	@echo -n Compiling push_swap...
+	@echo -n Compiling philo...
 	@gcc $(SRC) $(INCS) $(FLAGS) -o $(NAME)
 	@echo Done
+	@echo running
+	@./philo 1 1 1 1
 
 git:
 	@clear

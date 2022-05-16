@@ -18,22 +18,24 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <pthread.h>
 
 typedef struct s_philo
 {
-    int time_to_die;
-    int time_to_eat;
-    int time_to_sleep;
-}   t_philo;
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+}	t_philo;
 
 typedef struct s_all
 {
-    int		philo_num;
-	int		forks;
-    t_philo	*philos;
+	pthread_t	*thread_id;
+	int			philo_num;
+	int			forks;
+	t_philo		*philos;
 }	t_all;
 
-void    printf_time(void);
-char	*ft_itoa(int n);
+void	printf_time(void);
+int		ft_atoi(const char *str);
 
 #endif

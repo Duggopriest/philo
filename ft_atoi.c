@@ -12,49 +12,45 @@
 
 #include "philo.h"
 
-static int	ft_abs(int nbr)
+static int	ft_isspace(int c)
 {
-	if (nbr < 0)
-		return (-nbr);
-	return (nbr);
+	return ((c >= 9 && c <= 13) || c == ' ');
 }
 
-static void	ft_strrev(char *str)
+static int	ft_long_border(const char c, int mult, long nb)
 {
-	size_t	length;
-	size_t	i;
-	char	tmp;
+	long	border;
 
-	length = ft_strlen(str);
-	i = 0;
-	while (i < length / 2)
-	{
-		tmp = str[i];
-		str[i] = str[length - i - 1];
-		str[length - i++ - 1] = tmp;
-	}
+	border = 922337203685477580;
+	if ((nb > border || (nb == border && (c - '0') > 7)) && mult == 1)
+		return (-1);
+	else if ((nb > border || (nb == border && (c - '0') > 8)) && mult == -1)
+		return (0);
+	return (1);
 }
 
-char	*ft_itoa(int n)
+int	ft_atoi(const char *str)
 {
-	char	*str;
-	int		s;
-	size_t	length;
+	long	num;
+	int		sign;
+	int		brd;
 
-	s = (n < 0);
-	str = ft_calloc(11 + s, sizeof(*str));
-	if (!str)
-		return (NULL);
-	if (n == 0)
-		str[0] = '0';
-	length = 0;
-	while (n != 0)
+	num = 0;
+	sign = 1;
+	brd = 1;
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-')
+		sign = -1;
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str)
 	{
-		str[length++] = '0' + ft_abs(n % 10);
-		n = (n / 10);
+		brd = ft_long_border(*str, sign, num);
+		if (brd < 1)
+			return (brd);
+		num = (num * 10) + (*str - '0');
+		str++;
 	}
-	if (s)
-		str[length] = '-';
-	ft_strrev(str);
-	return (str);
+	return (num * sign);
 }
