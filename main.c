@@ -79,7 +79,7 @@ void	*phylo_run(void *vargp)
 	ded_time = all->philos[i].time_to_die + get_time();
 	while (all->has_ded == 0 && all->philos[i].times_eatin != 0)
 	{
-		printf("	%lims	%i is thinking\n", get_time(), i);
+		printf("	%lims	%i is thinking\n", get_time(), i + 1);
 		while (all->has_ded == 0)
 		{
 			if (ded_time < get_time())
