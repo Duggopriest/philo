@@ -33,9 +33,17 @@ typedef struct s_all
 	int			philo_num;
 	int			forks;
 	t_philo		*philos;
+	int			has_ded;
 }	t_all;
 
+long	get_time(void);
 void	printf_time(void);
 int		ft_atoi(const char *str);
+
+void	*phylo_run(void *vargp);
+
+void	philo_ded(int i, t_all *all);
+void	run_threads(t_all *all);
+void	spawn_philos(char **argv, t_all *all);
 
 #endif

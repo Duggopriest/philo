@@ -26,12 +26,12 @@ void	printf_time(void)
 	else
 	{
 		gettimeofday(&end, NULL);
-		printf("%ld\n", (end.tv_sec * 1000000 + end.tv_usec)
-			- (start->tv_sec * 1000000 + start->tv_usec));
+		printf("%ld\n", (end.tv_sec * 100 + end.tv_usec)
+			- (start->tv_sec * 100 + start->tv_usec));
 	}
 }
 
-int	get_time(void)
+long	get_time(void)
 {
 	struct timeval			end;
 	static struct timeval	*start = NULL;
@@ -44,8 +44,8 @@ int	get_time(void)
 	else
 	{
 		gettimeofday(&end, NULL);
-		return ((end.tv_sec * 1000000 + end.tv_usec)
-			- (start->tv_sec * 1000000 + start->tv_usec));
+		return (((end.tv_sec) * 1000 + (end.tv_usec) / 1000)
+			- ((start->tv_sec) * 1000 + (start->tv_usec) / 1000));
 	}
 	return (0);
 }
@@ -61,65 +61,55 @@ void	*phylo_run(void *vargp)
 {
 	int		i;
 	t_all	*all;
-	// long	last_ate;
-	int		wake_up;
+	long	wake_up;
+	long	eatting;
+	long	ded_time;
 
 	all = vargp;
 	i = assignnum();
-	all->philos[i].time_to_die += get_time();
-	while (all->philos[i].time_to_die >= get_time())
+	ded_time = all->philos[i].time_to_die + get_time();
+	while (all->has_ded == 0)
 	{
-		printf("	%i %i is thinking\n", get_time(), i);
-		// while (1)
-		// 	if (eat())
-		// 		break ;
-		all->philos[i].time_to_die += get_time(); // reset time to die
-		printf("	%i %i is sleeping\n", get_time(), i);
+		printf("	%lims	%i is thinking\n", get_time(), i);
+		while (all->has_ded == 0)
+		{
+			printf("forks = %i\n", all->forks);
+			printf("%li < %li\n", ded_time, get_time());
+			if (ded_time < get_time())
+				philo_ded(i, all);
+			if (all->forks >= 2 && all->has_ded == 0)
+			{
+				all->forks -= 2;
+				printf("	%lims	%i is eatting\n", get_time(), i);
+				eatting = all->philos[i].time_to_eat + get_time();
+				while (eatting >= get_time())
+					get_time();
+				ded_time = all->philos[i].time_to_die + get_time();
+				printf("%li < %li\n", ded_time, get_time());
+				all->forks += 2;
+				break ;
+			}
+		}
+		printf("	%lims	%i is sleeping\n", get_time(), i);
 		wake_up = all->philos[i].time_to_sleep + get_time();
-		while (wake_up >= get_time())
-			i = i;
+		while (wake_up >= get_time() && all->has_ded == 0)
+			get_time();
 	}
 	return (NULL);
 }
 
-void	spawn_philos(char **argv, t_all *all)
-{
-	int	i;
 
-	all->thread_id = malloc(sizeof(pthread_t) * all->forks);
-	i = -1;
-	while (++i < all->forks)
-	{
-		all->philos[i].time_to_die = ft_atoi(argv[1]);
-		pthread_create(&all->thread_id[0], NULL, phylo_run, all);
-	}
-	i = -1;
-	while (++i < all->forks)
-		all->philos[i].time_to_die = ft_atoi(argv[2]);
-	i = -1;
-	while (++i < all->forks)
-		all->philos[i].time_to_die = ft_atoi(argv[3]);
-}
-
-void	run_threads(t_all *all)
-{
-	int	i;
-
-	i = -1;
-	while (++i < all->forks)
-		pthread_join(all->thread_id[i], NULL);
-}
 
 int	main(int argc, char	**argv)
 {
 	t_all	all;
 
-	printf_time();
-	get_time();
-	all.forks = argc - 1;
-	all.forks = 10;
-	all.philo_num = all.forks;
-	all.philos = malloc(sizeof(t_philo) * all.forks);
+	if (argc == 1)
+		return (0);
+	all.forks = 2;//ft_atoi(argv[1]);
+	all.philo_num = ft_atoi(argv[1]);
+	all.philos = malloc(sizeof(t_philo) * all.philo_num);
+	all.has_ded = 0;
 	spawn_philos(argv, &all);
 	run_threads(&all);
 }

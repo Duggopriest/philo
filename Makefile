@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
+#    By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 13:29:03 by jgobbett          #+#    #+#              #
-#    Updated: 2022/05/16 23:44:05 by marvin           ###   ########.fr        #
+#    Updated: 2022/05/17 12:54:48 by jgobbett         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ all:
 	@gcc $(SRC) $(FLAGS) -o $(NAME)
 	@echo Done
 	@echo running
-	@./philo 1 100 100 100
+	./philo 1 1000 100 100
 
 git:
 	@clear
