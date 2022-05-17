@@ -12,11 +12,10 @@
 
 #include "philo.h"
 
-void	spawn_philos(char **argv, t_all *all)
+void	spawn_philos(char **argv, t_all *all, int argc)
 {
 	int	i;
 
-	printf("spawning %i philos\n", all->philo_num);
 	all->thread_id = malloc(sizeof(pthread_t) * all->philo_num);
 	i = -1;
 	while (++i < all->philo_num)
@@ -26,6 +25,13 @@ void	spawn_philos(char **argv, t_all *all)
 		all->philos[i].time_to_sleep = ft_atoi(argv[4]);
 		pthread_create(&all->thread_id[i], NULL, phylo_run, all);
 	}
+	i = -1;
+	if (argc == 6)
+		while (++i < all->philo_num)
+			all->philos[i].times_eatin = ft_atoi(argv[5]);
+	else
+		while (++i < all->philo_num)
+			all->philos[i].times_eatin = -1;
 }
 
 void	run_threads(t_all *all)
@@ -33,7 +39,6 @@ void	run_threads(t_all *all)
 	int	i;
 
 	i = -1;
-	printf_time();
 	get_time();
 	while (++i < all->philo_num)
 		pthread_join(all->thread_id[i], NULL);
@@ -44,9 +49,29 @@ void	philo_ded(int i, t_all *all)
 	int	j;
 
 	all->has_ded = 1;
-	printf("	%lims	%i died\n", get_time(), i);
+	printf("	%lims	%i died\n", get_time(), i + 1);
 	j = -1;
 	while (++j <= all->philo_num)
 		pthread_detach(all->thread_id[i]);
 	exit(0);
+}
+
+int	assignnum(void)
+{
+	static int	i = -1;
+
+	return (++i);
+}
+
+void	psleep(t_all *all, int i)
+{
+	long	wake_up;
+
+	if (all->has_ded == 0)
+	{
+		printf("	%lims	%i is sleeping\n", get_time(), i + 1);
+		wake_up = all->philos[i].time_to_sleep + get_time();
+		while (wake_up >= get_time() && all->has_ded == 0)
+			get_time();
+	}
 }

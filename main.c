@@ -50,66 +50,62 @@ long	get_time(void)
 	return (0);
 }
 
-int	assignnum(void)
+void	eat(t_all *all, int i, long *ded_time)
 {
-	static int	i = -1;
+	long	eatting;
+	long	b;
 
-	return (++i);
+	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
+	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
+	printf("	%lims	%i is eatting\n", get_time(), i + 1);
+	eatting = all->philos[i].time_to_eat + get_time();
+	if (eatting > *ded_time)
+		philo_ded(i, all);
+	while (eatting > get_time())
+		b = *ded_time;
+	all->philos[i].times_eatin--;
+	*ded_time = all->philos[i].time_to_die + get_time();
+	all->forks += 2;
 }
 
 void	*phylo_run(void *vargp)
 {
 	int		i;
 	t_all	*all;
-	long	wake_up;
-	long	eatting;
 	long	ded_time;
 
 	all = vargp;
 	i = assignnum();
 	ded_time = all->philos[i].time_to_die + get_time();
-	while (all->has_ded == 0)
+	while (all->has_ded == 0 && all->philos[i].times_eatin != 0)
 	{
 		printf("	%lims	%i is thinking\n", get_time(), i);
 		while (all->has_ded == 0)
 		{
-			printf("forks = %i\n", all->forks);
-			printf("%li < %li\n", ded_time, get_time());
 			if (ded_time < get_time())
 				philo_ded(i, all);
 			if (all->forks >= 2 && all->has_ded == 0)
 			{
 				all->forks -= 2;
-				printf("	%lims	%i is eatting\n", get_time(), i);
-				eatting = all->philos[i].time_to_eat + get_time();
-				while (eatting >= get_time())
-					get_time();
-				ded_time = all->philos[i].time_to_die + get_time();
-				printf("%li < %li\n", ded_time, get_time());
-				all->forks += 2;
+				eat(all, i, &ded_time);
 				break ;
 			}
 		}
-		printf("	%lims	%i is sleeping\n", get_time(), i);
-		wake_up = all->philos[i].time_to_sleep + get_time();
-		while (wake_up >= get_time() && all->has_ded == 0)
-			get_time();
+		psleep(all, i);
 	}
 	return (NULL);
 }
-
-
 
 int	main(int argc, char	**argv)
 {
 	t_all	all;
 
-	if (argc == 1)
+	if (argc < 5)
 		return (0);
-	all.forks = 2;//ft_atoi(argv[1]);
+	all.forks = ft_atoi(argv[1]);
 	all.philo_num = ft_atoi(argv[1]);
 	all.philos = malloc(sizeof(t_philo) * all.philo_num);
 	all.has_ded = 0;
-	spawn_philos(argv, &all);
+	spawn_philos(argv, &all, argc);
 	run_threads(&all);
 }

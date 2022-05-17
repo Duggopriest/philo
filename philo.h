@@ -25,6 +25,7 @@ typedef struct s_philo
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
+	int	times_eatin;
 }	t_philo;
 
 typedef struct s_all
@@ -41,9 +42,11 @@ void	printf_time(void);
 int		ft_atoi(const char *str);
 
 void	*phylo_run(void *vargp);
+int		assignnum(void);
+void	psleep(t_all *all, int i);
 
 void	philo_ded(int i, t_all *all);
 void	run_threads(t_all *all);
-void	spawn_philos(char **argv, t_all *all);
+void	spawn_philos(char **argv, t_all *all, int argc);
 
 #endif

@@ -20,8 +20,36 @@ all:
 	@echo -n Compiling philo...
 	@gcc $(SRC) $(FLAGS) -o $(NAME)
 	@echo Done
+
+#should die
+test1:
+	make
 	@echo running
-	./philo 1 1000 100 100
+	@./philo 1 800 200 200
+
+#should live
+test2:
+	make
+	@echo running
+	@./philo 5 800 200 200
+
+#should live
+test3:
+	make
+	@echo running
+	@./philo 5 800 200 200 7
+
+#should live
+test4:
+	make
+	@echo running
+	@./philo 4 410 200 200
+
+#One philosopher should die.
+test5:
+	make
+	@echo running
+	@./philo 4 310 200 100
 
 git:
 	@clear
@@ -36,4 +64,4 @@ clean:
 
 norm:
 	@clear
-	@norminette $(INCS) $(SRC)
+	@norminette
