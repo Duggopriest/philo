@@ -58,7 +58,7 @@ void	eat(t_all *all, int i, long *ded_time)
 	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
 	pthread_mutex_lock(&all->philos[i].fork);
 	all->philos[i].bork = 0;
-	pthread_mutex_lock(&all->philos[i - 1 % all->philo_num].fork);
+	pthread_mutex_lock(&all->philos[i - (1 % all->philo_num)].fork);
 	all->philos[i - 1 % all->philo_num].bork = 0;
 	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
 	printf("	%lims	%i is eatting\n", get_time(), i + 1);
@@ -71,28 +71,29 @@ void	eat(t_all *all, int i, long *ded_time)
 	*ded_time = all->philos[i].time_to_die + get_time();
 	pthread_mutex_unlock(&all->philos[i].fork);
 	all->philos[i].bork = 1;
-	pthread_mutex_unlock(&all->philos[i - 1 % all->philo_num].fork);
+	pthread_mutex_unlock(&all->philos[i - (1 % all->philo_num)].fork);
 	all->philos[i - 1 % all->philo_num].bork = 1;
 }
 
-void	*phylo_run(void *vargp)
+void	*phylo_run(t_philo *philos)
 {
 	int		i;
 	t_all	*all;
 	long	ded_time;
 
-	all = vargp;
-	i = assignnum();
-	ded_time = all->philos[i].time_to_die + get_time();
-	while (all->has_ded == 0 && all->philos[i].times_eatin != 0)
+	all = philos->all;
+	i = philos->id;
+	ded_time = philos->time_to_die + get_time();
+	while (all->has_ded == 0 && philos->times_eatin != 0)
 	{
 		printf("	%lims	%i is thinking\n", get_time(), i + 1);
 		while (all->has_ded == 0)
 		{
 			if (ded_time < get_time())
 				philo_ded(i, all);
-			if (all->philos[i - 1 % all->philo_num].bork
-				&& all->philos[i].bork && all->has_ded == 0)
+			printf("%i looking at %i\n", all->philos[i - (1 % all->philo_num)].bork, philos->bork);
+			if (all->philos[i - (1 % all->philo_num)].bork
+				&& philos->bork && all->has_ded == 0)
 			{
 				eat(all, i, &ded_time);
 				break ;

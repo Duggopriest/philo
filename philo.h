@@ -20,14 +20,18 @@
 # include <unistd.h>
 # include <pthread.h>
 
+typedef struct s_all	t_all;
+
 typedef struct s_philo
 {
+	int				id;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				times_eatin;
 	int				bork;
 	pthread_mutex_t	fork;
+	t_all			*all;
 }	t_philo;
 
 typedef struct s_all
@@ -42,7 +46,7 @@ long	get_time(void);
 void	printf_time(void);
 int		ft_atoi(const char *str);
 
-void	*phylo_run(void *vargp);
+void	*phylo_run(t_philo *philos);
 int		assignnum(void);
 void	psleep(t_all *all, int i);
 

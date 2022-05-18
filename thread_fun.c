@@ -6,7 +6,7 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/18 13:29:25 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/18 16:56:31 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,22 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 	int	i;
 
 	all->thread_id = malloc(sizeof(pthread_t) * all->philo_num);
-	i = 0;
-	while (i < all->philo_num)
+	i = -1;
+	while (++i < all->philo_num)
 	{
+		all->philos[i].id = i;
+		all->philos[i].all = all;
+		all->philos[i].times_eatin = -1;
 		all->philos[i].time_to_die = ft_atoi(argv[2]);
 		all->philos[i].time_to_eat = ft_atoi(argv[3]);
 		all->philos[i].time_to_sleep = ft_atoi(argv[4]);
-		pthread_create(&all->thread_id[i], NULL, phylo_run, all);
+		pthread_create(&all->thread_id[i], NULL,
+			(void *_Nullable)phylo_run, &all->philos[i]);
 		pthread_mutex_init(&all->philos[i].fork, NULL);
 	}
 	if (argc == 6)
 		while (++i < all->philo_num)
 			all->philos[i].times_eatin = ft_atoi(argv[5]);
-	else
-		while (++i < all->philo_num)
-			all->philos[i].times_eatin = -1;
 }
 
 void	run_threads(t_all *all)
