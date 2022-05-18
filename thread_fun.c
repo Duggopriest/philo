@@ -6,7 +6,7 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/18 17:36:16 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/18 18:13:25 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ void	int_ods(char **argv, t_all *all)
 	int	i;
 
 	i = 1;
-	while (++i < all->philo_num)
+	usleep(all->philos[0].time_to_eat * 1000);
+	while (i < all->philo_num)
 	{
 		all->philos[i].id = i;
 		all->philos[i].bork = 1;
@@ -38,8 +39,8 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 	int	i;
 
 	all->thread_id = malloc(sizeof(pthread_t) * all->philo_num);
-	i = -1;
-	while (++i < all->philo_num)
+	i = 0;
+	while (i < all->philo_num)
 	{
 		all->philos[i].id = i;
 		all->philos[i].bork = 1;
@@ -54,6 +55,7 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 		i += 2;
 	}
 	int_ods(argv, all);
+	i = -1;
 	if (argc == 6)
 		while (++i < all->philo_num)
 			all->philos[i].times_eatin = ft_atoi(argv[5]);

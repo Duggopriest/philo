@@ -53,6 +53,7 @@ long	get_time(void)
 void	eat(t_all *all, int i, long *ded_time)
 {
 	long	t;
+	long	eatting;
 
 	t = get_time();
 	all->philos[i].bork = 0;
@@ -62,13 +63,16 @@ void	eat(t_all *all, int i, long *ded_time)
 	printf("	%lims	%i has taken a fork\n", t, i + 1);
 	printf("	%lims	%i has taken a fork\n", t, i + 1);
 	printf("	%lims	%i is eatting\n", t, i + 1);
+	eatting = all->philos[i].time_to_eat + t;
 	usleep(all->philos[i].time_to_sleep * 1000);
-	*ded_time = all->philos[i].time_to_die + get_time();
+	// if (*ded_time < get_time())
+	// 	philo_ded(i, all);
 	all->philos[i].times_eatin--;
 	pthread_mutex_unlock(&all->philos[i].fork);
 	pthread_mutex_unlock(&all->philos[(i + 1) % all->philo_num].fork);
 	all->philos[i].bork = 1;
 	all->philos[i - 1 % all->philo_num].bork = 1;
+	*ded_time = all->philos[i].time_to_die + get_time();
 }
 
 void	*phylo_run(t_philo *philos)
@@ -79,8 +83,8 @@ void	*phylo_run(t_philo *philos)
 
 	all = philos->all;
 	i = philos->id;
+	usleep(10000);
 	ded_time = philos->time_to_die + get_time();
-	//usleep((philos->id % 2) * (philos->time_to_eat * 1000));
 	while (all->has_ded == 0 && philos->times_eatin != 0)
 	{
 		printf("	%lims	%i is thinking\n", get_time(), i + 1);
