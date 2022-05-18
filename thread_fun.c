@@ -6,11 +6,32 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/18 16:56:31 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/18 17:36:16 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	int_ods(char **argv, t_all *all)
+{
+	int	i;
+
+	i = 1;
+	while (++i < all->philo_num)
+	{
+		all->philos[i].id = i;
+		all->philos[i].bork = 1;
+		all->philos[i].all = all;
+		all->philos[i].times_eatin = -1;
+		all->philos[i].time_to_die = ft_atoi(argv[2]);
+		all->philos[i].time_to_eat = ft_atoi(argv[3]);
+		all->philos[i].time_to_sleep = ft_atoi(argv[4]);
+		pthread_create(&all->thread_id[i], NULL,
+			(void *_Nullable)phylo_run, &all->philos[i]);
+		pthread_mutex_init(&all->philos[i].fork, NULL);
+		i += 2;
+	}
+}
 
 void	spawn_philos(char **argv, t_all *all, int argc)
 {
@@ -21,6 +42,7 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 	while (++i < all->philo_num)
 	{
 		all->philos[i].id = i;
+		all->philos[i].bork = 1;
 		all->philos[i].all = all;
 		all->philos[i].times_eatin = -1;
 		all->philos[i].time_to_die = ft_atoi(argv[2]);
@@ -29,7 +51,9 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 		pthread_create(&all->thread_id[i], NULL,
 			(void *_Nullable)phylo_run, &all->philos[i]);
 		pthread_mutex_init(&all->philos[i].fork, NULL);
+		i += 2;
 	}
+	int_ods(argv, all);
 	if (argc == 6)
 		while (++i < all->philo_num)
 			all->philos[i].times_eatin = ft_atoi(argv[5]);
@@ -64,13 +88,6 @@ void	philo_ded(int i, t_all *all)
 	while (++j <= all->philo_num)
 		pthread_detach(all->thread_id[i]);
 	exit(0);
-}
-
-int	assignnum(void)
-{
-	static int	i = -1;
-
-	return (++i);
 }
 
 void	psleep(t_all *all, int i)

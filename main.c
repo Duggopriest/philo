@@ -52,26 +52,22 @@ long	get_time(void)
 
 void	eat(t_all *all, int i, long *ded_time)
 {
-	long	eatting;
-	long	b;
+	long	t;
 
-	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
-	pthread_mutex_lock(&all->philos[i].fork);
+	t = get_time();
 	all->philos[i].bork = 0;
-	pthread_mutex_lock(&all->philos[i - (1 % all->philo_num)].fork);
+	pthread_mutex_lock(&all->philos[i].fork);
 	all->philos[i - 1 % all->philo_num].bork = 0;
-	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
-	printf("	%lims	%i is eatting\n", get_time(), i + 1);
-	eatting = all->philos[i].time_to_eat + get_time();
-	if (eatting > *ded_time)
-		philo_ded(i, all);
-	while (eatting > get_time())
-		b = *ded_time;
-	all->philos[i].times_eatin--;
+	pthread_mutex_lock(&all->philos[(i + 1) % all->philo_num].fork);
+	printf("	%lims	%i has taken a fork\n", t, i + 1);
+	printf("	%lims	%i has taken a fork\n", t, i + 1);
+	printf("	%lims	%i is eatting\n", t, i + 1);
+	usleep(all->philos[i].time_to_sleep * 1000);
 	*ded_time = all->philos[i].time_to_die + get_time();
+	all->philos[i].times_eatin--;
 	pthread_mutex_unlock(&all->philos[i].fork);
+	pthread_mutex_unlock(&all->philos[(i + 1) % all->philo_num].fork);
 	all->philos[i].bork = 1;
-	pthread_mutex_unlock(&all->philos[i - (1 % all->philo_num)].fork);
 	all->philos[i - 1 % all->philo_num].bork = 1;
 }
 
@@ -84,6 +80,7 @@ void	*phylo_run(t_philo *philos)
 	all = philos->all;
 	i = philos->id;
 	ded_time = philos->time_to_die + get_time();
+	//usleep((philos->id % 2) * (philos->time_to_eat * 1000));
 	while (all->has_ded == 0 && philos->times_eatin != 0)
 	{
 		printf("	%lims	%i is thinking\n", get_time(), i + 1);
@@ -91,9 +88,8 @@ void	*phylo_run(t_philo *philos)
 		{
 			if (ded_time < get_time())
 				philo_ded(i, all);
-			printf("%i looking at %i\n", all->philos[i - (1 % all->philo_num)].bork, philos->bork);
-			if (all->philos[i - (1 % all->philo_num)].bork
-				&& philos->bork && all->has_ded == 0)
+			if (all->philos[(i + 1) % all->philo_num].bork
+				&& philos->bork && all->has_ded == 0 && all->philo_num > 1)
 			{
 				eat(all, i, &ded_time);
 				break ;
