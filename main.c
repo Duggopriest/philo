@@ -56,6 +56,10 @@ void	eat(t_all *all, int i, long *ded_time)
 	long	b;
 
 	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
+	pthread_mutex_lock(&all->philos[i].fork);
+	all->philos[i].bork = 0;
+	pthread_mutex_lock(&all->philos[i - 1 % all->philo_num].fork);
+	all->philos[i - 1 % all->philo_num].bork = 0;
 	printf("	%lims	%i has taken a fork\n", get_time(), i + 1);
 	printf("	%lims	%i is eatting\n", get_time(), i + 1);
 	eatting = all->philos[i].time_to_eat + get_time();
@@ -65,7 +69,10 @@ void	eat(t_all *all, int i, long *ded_time)
 		b = *ded_time;
 	all->philos[i].times_eatin--;
 	*ded_time = all->philos[i].time_to_die + get_time();
-	all->forks += 2;
+	pthread_mutex_unlock(&all->philos[i].fork);
+	all->philos[i].bork = 1;
+	pthread_mutex_unlock(&all->philos[i - 1 % all->philo_num].fork);
+	all->philos[i - 1 % all->philo_num].bork = 1;
 }
 
 void	*phylo_run(void *vargp)
@@ -84,9 +91,9 @@ void	*phylo_run(void *vargp)
 		{
 			if (ded_time < get_time())
 				philo_ded(i, all);
-			if (all->forks >= 2 && all->has_ded == 0)
+			if (all->philos[i - 1 % all->philo_num].bork
+				&& all->philos[i].bork && all->has_ded == 0)
 			{
-				all->forks -= 2;
 				eat(all, i, &ded_time);
 				break ;
 			}
@@ -102,7 +109,6 @@ int	main(int argc, char	**argv)
 
 	if (argc < 5)
 		return (0);
-	all.forks = ft_atoi(argv[1]);
 	all.philo_num = ft_atoi(argv[1]);
 	all.philos = malloc(sizeof(t_philo) * all.philo_num);
 	all.has_ded = 0;

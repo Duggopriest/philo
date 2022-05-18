@@ -22,17 +22,18 @@
 
 typedef struct s_philo
 {
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	times_eatin;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				times_eatin;
+	int				bork;
+	pthread_mutex_t	fork;
 }	t_philo;
 
 typedef struct s_all
 {
 	pthread_t	*thread_id;
 	int			philo_num;
-	int			forks;
 	t_philo		*philos;
 	int			has_ded;
 }	t_all;
