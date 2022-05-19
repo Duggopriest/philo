@@ -6,33 +6,11 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/19 15:32:12 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/19 16:08:05 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	int_ods(char **argv, t_all *all)
-{
-	int	i;
-
-	i = 1;
-	//usleep(all->philos[0].time_to_eat * 999);
-	while (i < all->philo_num)
-	{
-		all->philos[i].id = i;
-		all->philos[i].bork = 1;
-		all->philos[i].all = all;
-		all->philos[i].times_eatin = -1;
-		all->philos[i].time_to_die = ft_atoi(argv[2]);
-		all->philos[i].time_to_eat = ft_atoi(argv[3]);
-		all->philos[i].time_to_sleep = ft_atoi(argv[4]);
-		pthread_create(&all->thread_id[i], NULL,
-			(void *_Nullable)phylo_run, &all->philos[i]);
-		pthread_mutex_init(&all->philos[i].fork, NULL);
-		i += 2;
-	}
-}
 
 void	spawn_philos(char **argv, t_all *all, int argc)
 {
@@ -42,7 +20,6 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 	i = 0;
 	while (i < all->philo_num)
 	{
-		//usleep(all->philos[i].time_to_sleep * 500);
 		all->philos[i].id = i;
 		all->philos[i].bork = 1;
 		all->philos[i].all = all;
@@ -53,9 +30,9 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 		pthread_create(&all->thread_id[i], NULL,
 			(void *_Nullable)phylo_run, &all->philos[i]);
 		pthread_mutex_init(&all->philos[i].fork, NULL);
-		i += 1;
+		i++;
+		//usleep(all->philos[0].time_to_eat * 1000);
 	}
-	//int_ods(argv, all);
 	i = -1;
 	if (argc == 6)
 		while (++i < all->philo_num)
@@ -95,9 +72,17 @@ void	philo_ded(int i, t_all *all)
 
 void	psleep(t_all *all, int i)
 {
+	long	tsleep;
+	long	t;
+
 	if (all->has_ded == 0)
 	{
-		printf("	%lims	%i is sleeping\n", get_time(), i + 1);
-		usleep(all->philos[0].time_to_sleep * 1000);
+		t = get_time();
+		tsleep = all->philos[i].time_to_sleep + t;
+		printf("	%lims	%i is sleeping\n", t, i + 1);
+		while (tsleep > get_time())
+			;
+		printf("	%lims	%i is thinking\n",
+			t + all->philos[i].time_to_sleep, i + 1);
 	}
 }

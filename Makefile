@@ -6,7 +6,7 @@
 #    By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 13:29:03 by jgobbett          #+#    #+#              #
-#    Updated: 2022/05/19 13:25:43 by jgobbett         ###   ########.fr        #
+#    Updated: 2022/05/19 15:45:42 by jgobbett         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ test3:
 #should live
 test4:
 	make
-	@./philo 4 410 200 200
+	@./philo 4 450 200 200
 
 #One philosopher should die.
 test5:

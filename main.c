@@ -12,7 +12,6 @@
 
 #include "philo.h"
 
-//inislize at start then call anywhere with printf_time(NULL)
 int	check_eat(t_all *all)
 {
 	int	i;
@@ -47,20 +46,20 @@ long	get_time(void)
 void	eat(t_all *all, int i, long *ded_time)
 {
 	long	t;
-	//long	eatting;
+	long	eatting;
 
-	t = get_time();
 	pthread_mutex_lock(&all->philos[i].fork);
 	all->philos[i].bork = 0;
 	pthread_mutex_lock(&all->philos[(i + 1) % all->philo_num].fork);
 	all->philos[i - 1 % all->philo_num].bork = 0;
-	printf("	%lims	%i has taken a fork\n", t, i + 1);
-	printf("	%lims	%i has taken a fork\n", t, i + 1);
+	t = get_time();
 	printf("	%lims	%i is eatting\n", t, i + 1);
-	//eatting = all->philos[i].time_to_eat + t;
-	// if (*ded_time < get_time())
-	// 	philo_ded(i, all);
-	usleep(all->philos[i].time_to_sleep * 1000);
+	printf("	%lims	%i has taken a fork\n", t, i + 1);
+	printf("	%lims	%i has taken a fork\n", t, i + 1);
+	//usleep(all->philos[i].time_to_eat * 1000);
+	eatting = all->philos[i].time_to_eat + t;
+	while (eatting > get_time())
+		;
 	all->philos[i].times_eatin--;
 	pthread_mutex_unlock(&all->philos[i].fork);
 	pthread_mutex_unlock(&all->philos[(i + 1) % all->philo_num].fork);
@@ -77,11 +76,9 @@ void	*phylo_run(t_philo *philos)
 
 	all = philos->all;
 	i = philos->id;
-	usleep(1000);
 	ded_time = philos->time_to_die + get_time();
 	while (all->has_ded == 0 && philos->times_eatin != 0)
 	{
-		printf("	%lims	%i is thinking\n", get_time(), i + 1);
 		while (all->has_ded == 0)
 		{
 			if (ded_time < get_time())
@@ -108,7 +105,6 @@ int	main(int argc, char	**argv)
 	all.philos = malloc(sizeof(t_philo) * all.philo_num);
 	all.has_ded = 0;
 	spawn_philos(argv, &all, argc);
-	//run_threads(&all);
 	while (all.has_ded == 0 && check_eat(&all))
 		;
 	usleep(10000);
