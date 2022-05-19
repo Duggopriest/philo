@@ -6,7 +6,7 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/19 16:08:05 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/19 16:15:39 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 			(void *_Nullable)phylo_run, &all->philos[i]);
 		pthread_mutex_init(&all->philos[i].fork, NULL);
 		i++;
-		//usleep(all->philos[0].time_to_eat * 1000);
 	}
 	i = -1;
 	if (argc == 6)

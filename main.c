@@ -56,7 +56,6 @@ void	eat(t_all *all, int i, long *ded_time)
 	printf("	%lims	%i is eatting\n", t, i + 1);
 	printf("	%lims	%i has taken a fork\n", t, i + 1);
 	printf("	%lims	%i has taken a fork\n", t, i + 1);
-	//usleep(all->philos[i].time_to_eat * 1000);
 	eatting = all->philos[i].time_to_eat + t;
 	while (eatting > get_time())
 		;
@@ -65,7 +64,7 @@ void	eat(t_all *all, int i, long *ded_time)
 	pthread_mutex_unlock(&all->philos[(i + 1) % all->philo_num].fork);
 	all->philos[i].bork = 1;
 	all->philos[i - 1 % all->philo_num].bork = 1;
-	*ded_time = all->philos[i].time_to_die + get_time();
+	*ded_time = all->philos[i].time_to_die + eatting;
 }
 
 void	*phylo_run(t_philo *philos)
