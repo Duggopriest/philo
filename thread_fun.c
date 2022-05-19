@@ -6,7 +6,7 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/18 18:13:25 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/19 13:39:08 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	int_ods(char **argv, t_all *all)
 	int	i;
 
 	i = 1;
-	usleep(all->philos[0].time_to_eat * 1000);
+	//usleep(all->philos[0].time_to_eat * 999);
 	while (i < all->philo_num)
 	{
 		all->philos[i].id = i;
@@ -42,6 +42,7 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 	i = 0;
 	while (i < all->philo_num)
 	{
+		//usleep(all->philos[i].time_to_sleep * 500);
 		all->philos[i].id = i;
 		all->philos[i].bork = 1;
 		all->philos[i].all = all;
@@ -52,9 +53,9 @@ void	spawn_philos(char **argv, t_all *all, int argc)
 		pthread_create(&all->thread_id[i], NULL,
 			(void *_Nullable)phylo_run, &all->philos[i]);
 		pthread_mutex_init(&all->philos[i].fork, NULL);
-		i += 2;
+		i += 1;
 	}
-	int_ods(argv, all);
+	//int_ods(argv, all);
 	i = -1;
 	if (argc == 6)
 		while (++i < all->philo_num)
@@ -94,13 +95,12 @@ void	philo_ded(int i, t_all *all)
 
 void	psleep(t_all *all, int i)
 {
-	long	wake_up;
-
 	if (all->has_ded == 0)
 	{
 		printf("	%lims	%i is sleeping\n", get_time(), i + 1);
-		wake_up = all->philos[i].time_to_sleep + get_time();
-		while (wake_up >= get_time() && all->has_ded == 0)
-			get_time();
+		//wake_up =  + get_time();
+		usleep(all->philos[0].time_to_sleep * 1000);
+		// while (wake_up >= get_time() && all->has_ded == 0)
+		// 	usleep(100);
 	}
 }
