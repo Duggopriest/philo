@@ -13,22 +13,16 @@
 #include "philo.h"
 
 //inislize at start then call anywhere with printf_time(NULL)
-void	printf_time(void)
+int	check_eat(t_all *all)
 {
-	struct timeval			end;
-	static struct timeval	*start = NULL;
+	int	i;
 
-	if (start == NULL)
-	{
-		start = malloc(sizeof(end));
-		gettimeofday(start, NULL);
-	}
-	else
-	{
-		gettimeofday(&end, NULL);
-		printf("%ld\n", (end.tv_sec * 100 + end.tv_usec)
-			- (start->tv_sec * 100 + start->tv_usec));
-	}
+	i = -1;
+	while (i < all->philo_num)
+		if (all->philos[i].times_eatin > 0
+			|| all->philos[i].times_eatin < 0)
+			return (1);
+	return (0);
 }
 
 long	get_time(void)
@@ -56,8 +50,8 @@ void	eat(t_all *all, int i, long *ded_time)
 	//long	eatting;
 
 	t = get_time();
-	// pthread_mutex_lock(&all->philos[i].fork);
-	// all->philos[i].bork = 0;
+	pthread_mutex_lock(&all->philos[i].fork);
+	all->philos[i].bork = 0;
 	pthread_mutex_lock(&all->philos[(i + 1) % all->philo_num].fork);
 	all->philos[i - 1 % all->philo_num].bork = 0;
 	printf("	%lims	%i has taken a fork\n", t, i + 1);
@@ -99,7 +93,6 @@ void	*phylo_run(t_philo *philos)
 				break ;
 			}
 		}
-		//ded_time = philos->time_to_die + get_time();
 		psleep(all, i);
 	}
 	return (NULL);
@@ -116,7 +109,8 @@ int	main(int argc, char	**argv)
 	all.has_ded = 0;
 	spawn_philos(argv, &all, argc);
 	//run_threads(&all);
-	while (all.has_ded == 0)
+	while (all.has_ded == 0 && check_eat(&all))
 		;
-	return (0);
+	usleep(10000);
+	return (1);
 }

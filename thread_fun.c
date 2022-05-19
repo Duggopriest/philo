@@ -6,7 +6,7 @@
 /*   By: jgobbett <jgobbett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 12:18:50 by jgobbett          #+#    #+#             */
-/*   Updated: 2022/05/19 13:39:08 by jgobbett         ###   ########.fr       */
+/*   Updated: 2022/05/19 15:32:12 by jgobbett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	philo_ded(int i, t_all *all)
 	printf("	%lims	%i died\n", get_time(), i + 1);
 	j = -1;
 	while (++j <= all->philo_num)
-		pthread_detach(all->thread_id[i]);
+		pthread_detach(all->thread_id[j]);
 	exit(0);
 }
 
@@ -98,9 +98,6 @@ void	psleep(t_all *all, int i)
 	if (all->has_ded == 0)
 	{
 		printf("	%lims	%i is sleeping\n", get_time(), i + 1);
-		//wake_up =  + get_time();
 		usleep(all->philos[0].time_to_sleep * 1000);
-		// while (wake_up >= get_time() && all->has_ded == 0)
-		// 	usleep(100);
 	}
 }
