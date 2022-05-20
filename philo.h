@@ -40,11 +40,15 @@ typedef struct s_all
 	int			philo_num;
 	t_philo		*philos;
 	int			has_ded;
+	int			*line;
+	int			loaded;
 }	t_all;
 
 long	get_time(void);
 void	printf_time(void);
 int		ft_atoi(const char *str);
+long	psync(t_all *all);
+void	shift(t_all *all);
 
 void	*phylo_run(t_philo *philos);
 int		assignnum(void);
